@@ -1,0 +1,232 @@
+/*   index.html (Homepage and User Authentication)
+This is the homepage where users can log in or register.*/
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Online Marketplace</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Online Marketplace</h1>
+      <nav>
+        <a href="product.html">Products</a>
+        <a href="cart.html">Cart</a>
+      </nav>
+    </header>
+
+    <div class="auth-container">
+      <h2>Login</h2>
+      <input type="text" id="loginUsername" placeholder="Username" />
+      <input type="password" id="loginPassword" placeholder="Password" />
+      <button onclick="login()">Login</button>
+
+      <h2>Register</h2>
+      <input type="text" id="registerUsername" placeholder="Username" />
+      <input type="password" id="registerPassword" placeholder="Password" />
+      <button onclick="register()">Register</button>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+/*product.html (Product Listing Page)
+A page where all the products will be displayed.*/
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Products</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Products</h1>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="cart.html">Cart</a>
+      </nav>
+    </header>
+
+    <div id="product-list">
+      <!-- Product items will be dynamically generated here -->
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+/*cart.html (Shopping Cart Page)
+A page for displaying the products added to the cart.*/
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Your Shopping Cart</h1>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="product.html">Products</a>
+      </nav>
+    </header>
+
+    <div id="cart-items">
+      <!-- Cart items will be dynamically generated here -->
+    </div>
+    <button onclick="checkout()">Checkout</button>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+
+```
+/*Basic styling for the pages/
+```css
+body {
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+header {
+  width: 100%;
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+nav a {
+  margin: 0 15px;
+  color: white;
+  text-decoration: none;
+}
+
+.auth-container,
+#product-list,
+#cart-items {
+  width: 80%;
+  max-width: 600px;
+  background: white;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+button {
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+```
+/* Handles user authentication, product listing, and cart functionality.*/
+```js
+// Sample product data (in a real app, this would come from a database)
+const products = [
+  {
+    id: 1,
+    name: "Product 1",
+    price: 100,
+    description: "Description of product 1",
+  },
+  {
+    id: 2,
+    name: "Product 2",
+    price: 200,
+    description: "Description of product 2",
+  },
+  {
+    id: 3,
+    name: "Product 3",
+    price: 300,
+    description: "Description of product 3",
+  },
+];
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+// User Authentication
+function login() {
+  const username = document.getElementById("loginUsername").value;
+  const password = document.getElementById("loginPassword").value;
+
+  if (username === "user" && password === "password") {
+    alert("Login successful!");
+  } else {
+    alert("Invalid credentials.");
+  }
+}
+
+function register() {
+  const username = document.getElementById("registerUsername").value;
+  const password = document.getElementById("registerPassword").value;
+  alert(`User registered: ${username}`);
+}
+
+// Display products
+if (document.getElementById("product-list")) {
+  const productList = document.getElementById("product-list");
+  products.forEach((product) => {
+    const productItem = document.createElement("div");
+    productItem.innerHTML = `
+      <h3>${product.name}</h3>
+      <p>${product.description}</p>
+      <p>Price: $${product.price}</p>
+      <button onclick="addToCart(${product.id})">Add to Cart</button>
+    `;
+    productList.appendChild(productItem);
+  });
+}
+
+// Add to Cart
+function addToCart(productId) {
+  const product = products.find((p) => p.id === productId);
+  cart.push(product);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  alert(`${product.name} added to cart.`);
+}
+
+// Display cart items
+if (document.getElementById("cart-items")) {
+  const cartItems = document.getElementById("cart-items");
+  cart.forEach((item) => {
+    const cartItem = document.createElement("div");
+    cartItem.innerHTML = `
+      <h3>${item.name}</h3>
+      <p>Price: $${item.price}</p>
+    `;
+    cartItems.appendChild(cartItem);
+  });
+}
+
+// Checkout
+function checkout() {
+  alert("Thank you for your purchase!");
+  cart = [];
+  localStorage.setItem("cart", JSON.stringify(cart));
+  location.reload();
+}
+
+```
